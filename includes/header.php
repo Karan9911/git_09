@@ -11,6 +11,8 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
     <!-- Custom CSS -->
     <link href="<?php echo SITE_URL; ?>/assets/css/style.css" rel="stylesheet">
+    <!-- Pricing CSS -->
+    <link href="<?php echo SITE_URL; ?>/assets/css/pricing.css" rel="stylesheet">
     <!-- Google Tag Manager -->
     <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
     new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],

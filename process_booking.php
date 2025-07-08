@@ -17,7 +17,7 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 //  }
 
 // Validate required fields
-$required_fields = ['therapist_id', 'full_name', 'email', 'phone', 'booking_date', 'booking_time', 'total_amount'];
+$required_fields = ['therapist_id', 'full_name', 'email', 'phone', 'booking_date', 'booking_time', 'total_amount', 'region'];
 $errors = [];
 
 foreach ($required_fields as $field) {
@@ -40,6 +40,15 @@ $booking_date = sanitizeInput($_POST['booking_date']);
 $booking_time = sanitizeInput($_POST['booking_time']);
 $message = sanitizeInput($_POST['message'] ?? '');
 $total_amount = (float)$_POST['total_amount'];
+$region = sanitizeInput($_POST['region']);
+$is_night = isset($_POST['is_night']) && $_POST['is_night'] === '1';
+$night_charge = (float)($_POST['night_charge'] ?? 0);
+
+// Validate region
+if (!in_array($region, ['ncr', 'other'])) {
+    echo json_encode(['success' => false, 'message' => 'Invalid region selected']);
+    exit;
+}
 
 // Validate email
 if (!validateEmail($email)) {
@@ -92,10 +101,13 @@ try {
         'booking_date' => $booking_date,
         'booking_time' => $booking_time,
         'message' => $message,
-        'total_amount' => $total_amount
+        'total_amount' => $total_amount,
+        'region' => $region,
+        'is_night' => $is_night,
+        'night_charge' => $night_charge
     ];
     
-    $result = createBooking($bookingData);
+    $result = createBookingWithRegion($bookingData);
     
     if ($result['success']) {
         // Send confirmation email

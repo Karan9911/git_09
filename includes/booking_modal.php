@@ -87,6 +87,9 @@
                                     <input type="hidden" name="type" value="booking">
                                     <input type="hidden" name="therapist_id" id="bookingTherapistId">
                                     <input type="hidden" name="total_amount" id="bookingAmount">
+                                    <input type="hidden" name="region" id="bookingRegion">
+                                    <input type="hidden" name="is_night" id="bookingIsNight">
+                                    <input type="hidden" name="night_charge" id="bookingNightCharge">
                                     
                                     <div class="row g-3">
                                         <div class="col-md-6">
@@ -133,6 +136,30 @@
                                         <h6 class="fw-bold mb-3">
                                             <i class="bi bi-credit-card me-2"></i>Payment Information
                                         </h6>
+                                        
+                                        <!-- Night Time Toggle -->
+                                        <div class="night-time-section">
+                                            <div class="night-toggle-container">
+                                                <div>
+                                                    <h6 class="mb-1">
+                                                        <i class="bi bi-moon-stars me-2"></i>Night Time Service
+                                                    </h6>
+                                                    <small class="text-muted">Available 8 PM - 8 AM</small>
+                                                </div>
+                                                <label class="night-toggle-switch">
+                                                    <input type="checkbox" id="nightTimeToggle">
+                                                    <span class="night-slider"></span>
+                                                </label>
+                                            </div>
+                                            <div class="night-time-info" id="nightTimeInfo" style="display: none;">
+                                                <i class="bi bi-info-circle me-2"></i>
+                                                <small>Night time service includes additional ₹1,500 charge for premium late-night availability.</small>
+                                            </div>
+                                        </div>
+                                        
+                                        <!-- Price Breakdown -->
+                                        <div id="priceBreakdown"></div>
+                                        
                                         <div class="payment-amount-display mb-3">
                                             <div class="d-flex justify-content-between align-items-center p-3 bg-light rounded">
                                                 <span>Session Amount:</span>

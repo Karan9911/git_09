@@ -73,6 +73,8 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <!-- Custom JS -->
     <script src="<?php echo SITE_URL; ?>/assets/js/main.js"></script>
+    <!-- Pricing JS -->
+    <script src="<?php echo SITE_URL; ?>/assets/js/pricing.js"></script>
     
     <?php if (isset($extraScripts)) echo $extraScripts; ?>
 </body>

@@ -1,0 +1,217 @@
+/* Region-based pricing styles */
+.region-toggle-container {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 15px;
+    padding: 1.5rem;
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    margin-top: 2rem;
+}
+
+.region-toggle {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
+.toggle-label {
+    color: white;
+    font-weight: 600;
+    font-size: 1.1rem;
+    margin-right: 1rem;
+}
+
+.toggle-buttons {
+    display: flex;
+    gap: 0.5rem;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    padding: 0.5rem;
+}
+
+.region-btn {
+    background: transparent;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    color: white;
+    padding: 0.75rem 1.5rem;
+    border-radius: 10px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    min-width: 140px;
+    justify-content: center;
+}
+
+.region-btn:hover {
+    background: rgba(255, 255, 255, 0.1);
+    border-color: rgba(255, 255, 255, 0.5);
+    transform: translateY(-2px);
+}
+
+.region-btn.active {
+    background: white;
+    color: var(--primary-color);
+    border-color: white;
+    box-shadow: 0 4px 15px rgba(255, 255, 255, 0.3);
+}
+
+.region-btn.active:hover {
+    background: white;
+    color: var(--primary-color);
+}
+
+/* Night time toggle */
+.night-time-section {
+    background: var(--secondary-color);
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin: 1rem 0;
+    border: 2px solid var(--border-color);
+}
+
+.night-toggle-container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 1rem;
+}
+
+.night-toggle-switch {
+    position: relative;
+    display: inline-block;
+    width: 60px;
+    height: 34px;
+}
+
+.night-toggle-switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.night-slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    transition: 0.4s;
+    border-radius: 34px;
+}
+
+.night-slider:before {
+    position: absolute;
+    content: "";
+    height: 26px;
+    width: 26px;
+    left: 4px;
+    bottom: 4px;
+    background-color: white;
+    transition: 0.4s;
+    border-radius: 50%;
+}
+
+input:checked + .night-slider {
+    background-color: var(--primary-color);
+}
+
+input:checked + .night-slider:before {
+    transform: translateX(26px);
+}
+
+/* Price breakdown */
+.price-breakdown {
+    background: white;
+    border-radius: 8px;
+    padding: 1rem;
+    border: 2px solid var(--primary-color);
+    margin-top: 1rem;
+}
+
+.price-breakdown .d-flex {
+    margin-bottom: 0.5rem;
+}
+
+.price-breakdown .d-flex:last-child {
+    margin-bottom: 0;
+}
+
+/* Region indicator in navbar */
+.region-indicator {
+    background: var(--primary-color);
+    color: white;
+    padding: 0.25rem 0.75rem;
+    border-radius: 15px;
+    font-size: 0.8rem;
+    font-weight: 500;
+    margin-left: 1rem;
+}
+
+/* Therapist card price updates */
+.price-display {
+    transition: all 0.3s ease;
+}
+
+.price-display.updating {
+    opacity: 0.6;
+    transform: scale(0.95);
+}
+
+/* Modal enhancements */
+.booking-modal .modal-body {
+    max-height: 80vh;
+    overflow-y: auto;
+}
+
+.night-time-info {
+    background: linear-gradient(135deg, #1a1a2e, #16213e);
+    color: white;
+    padding: 1rem;
+    border-radius: 8px;
+    margin-top: 0.5rem;
+}
+
+.night-time-info i {
+    color: #ffd700;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+    .region-toggle {
+        flex-direction: column;
+        text-align: center;
+    }
+    
+    .toggle-buttons {
+        width: 100%;
+        justify-content: center;
+    }
+    
+    .region-btn {
+        flex: 1;
+        min-width: auto;
+    }
+    
+    .night-toggle-container {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 1rem;
+    }
+}
+
+/* Animation for price changes */
+@keyframes priceUpdate {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.05); color: var(--primary-color); }
+    100% { transform: scale(1); }
+}
+
+.price-updating {
+    animation: priceUpdate 0.5s ease-in-out;
+}

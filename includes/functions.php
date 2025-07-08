@@ -1,5 +1,6 @@
 <?php
 require_once 'database.php';
+require_once 'pricing_functions.php';
 
 // Security functions
 function generateCSRFToken() {
@@ -160,7 +161,18 @@ function registerUser($name, $email, $phone, $city, $password) {
         ");
         
         if ($stmt->execute([$name, $email, $phone, $city, $hashedPassword])) {
-            return ['success' => true, 'message' => 'Account created successfully'];
+            $userId = $db->lastInsertId();
+            
+            // Auto-login the user
+            session_regenerate_id(true);
+            $_SESSION['user_id'] = $userId;
+            $_SESSION['user_name'] = $name;
+            $_SESSION['user_email'] = $email;
+            $_SESSION['user_phone'] = $phone;
+            $_SESSION['user_city'] = $city;
+            $_SESSION['user_role'] = 'user';
+            
+            return ['success' => true, 'message' => 'Account created successfully', 'auto_login' => true];
         }
     } catch (Exception $e) {
         return ['success' => false, 'message' => 'Registration failed'];

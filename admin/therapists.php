@@ -16,6 +16,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if ($action === 'add' || $action === 'edit') {
         $name = sanitizeInput($_POST['name'] ?? '');
         $price = (float)($_POST['price_per_session'] ?? 0);
+        $priceNcr = (float)($_POST['price_ncr'] ?? 0);
+        $priceOther = (float)($_POST['price_other'] ?? 0);
         $height = sanitizeInput($_POST['height'] ?? '');
         $weight = sanitizeInput($_POST['weight'] ?? '');
         $description = sanitizeInput($_POST['description'] ?? '');
@@ -23,8 +25,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $status = $_POST['status'] ?? 'active';
         $services = $_POST['services'] ?? [];
         
-        if (empty($name) || $price <= 0) {
-            $message = 'Name and valid price are required';
+        if (empty($name) || $price <= 0 || $priceNcr <= 0 || $priceOther <= 0) {
+            $message = 'Name and valid prices for all regions are required';
             $messageType = 'danger';
         } else {
             $db = getDB();
@@ -35,10 +37,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 if ($action === 'add') {
                     // Add new therapist
                     $stmt = $db->prepare("
-                        INSERT INTO therapists (name, price_per_session, height, weight, description, availability_slots, status) 
-                        VALUES (?, ?, ?, ?, ?, ?, ?)
+                        INSERT INTO therapists (name, price_per_session, price_ncr, price_other, height, weight, description, availability_slots, status) 
+                        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
                     ");
-                    $stmt->execute([$name, $price, $height, $weight, $description, $availability, $status]);
+                    $stmt->execute([$name, $price, $priceNcr, $priceOther, $height, $weight, $description, $availability, $status]);
                     $therapistId = $db->lastInsertId();
                     
                 } else {
@@ -46,10 +48,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     $therapistId = (int)$_POST['therapist_id'];
                     $stmt = $db->prepare("
                         UPDATE therapists 
-                        SET name = ?, price_per_session = ?, height = ?, weight = ?, description = ?, availability_slots = ?, status = ?
+                        SET name = ?, price_per_session = ?, price_ncr = ?, price_other = ?, height = ?, weight = ?, description = ?, availability_slots = ?, status = ?
                         WHERE id = ?
                     ");
-                    $stmt->execute([$name, $price, $height, $weight, $description, $availability, $status, $therapistId]);
+                    $stmt->execute([$name, $price, $priceNcr, $priceOther, $height, $weight, $description, $availability, $status, $therapistId]);
                 }
                 
                 // Update services
@@ -268,6 +270,14 @@ $services = getAllServices();
                         <div class="col-md-6">
                             <label class="form-label">Price per Session (₹) *</label>
                             <input type="number" class="form-control" name="price_per_session" id="therapistPrice" min="1" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Delhi-NCR Price (₹) *</label>
+                            <input type="number" class="form-control" name="price_ncr" id="therapistPriceNcr" min="1" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Rest of India Price (₹) *</label>
+                            <input type="number" class="form-control" name="price_other" id="therapistPriceOther" min="1" required>
                         </div>
                         <div class="col-md-6">
                             <label class="form-label">Height</label>

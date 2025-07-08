@@ -181,6 +181,18 @@ function handleBookingSubmission(e) {
         return;
     }
     
+    // Update pricing data before submission
+    if (window.pricingManager) {
+        const pricingData = window.pricingManager.getBookingData();
+        const bookingRegion = document.getElementById('bookingRegion');
+        const bookingIsNight = document.getElementById('bookingIsNight');
+        const bookingNightCharge = document.getElementById('bookingNightCharge');
+        
+        if (bookingRegion) bookingRegion.value = pricingData.region;
+        if (bookingIsNight) bookingIsNight.value = pricingData.isNight ? '1' : '0';
+        if (bookingNightCharge) bookingNightCharge.value = pricingData.nightCharge;
+    }
+    
     // Show loading state
     submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Processing...';
     submitBtn.disabled = true;
@@ -307,20 +319,26 @@ function openBookingModal(therapistId) {
     if (inquiryTherapistId) inquiryTherapistId.value = therapistId;
     if (bookingTherapistId) bookingTherapistId.value = therapistId;
     
+    // Set region and pricing data
+    if (window.pricingManager) {
+        const pricingData = window.pricingManager.getBookingData();
+        const bookingRegion = document.getElementById('bookingRegion');
+        const bookingIsNight = document.getElementById('bookingIsNight');
+        const bookingNightCharge = document.getElementById('bookingNightCharge');
+        
+        if (bookingRegion) bookingRegion.value = pricingData.region;
+        if (bookingIsNight) bookingIsNight.value = pricingData.isNight ? '1' : '0';
+        if (bookingNightCharge) bookingNightCharge.value = pricingData.nightCharge;
+    }
+    
     // Fetch therapist details for pricing
     fetch(`get_therapist_details.php?id=${therapistId}`)
         .then(response => response.json())
         .then(data => {
             if (data.success) {
-                const bookingAmount = document.getElementById('bookingAmount');
-                const displayAmount = document.getElementById('displayAmount');
-                
-                if (bookingAmount) {
-                    bookingAmount.value = data.therapist.price_per_session;
-                }
-                
-                if (displayAmount) {
-                    displayAmount.textContent = `₹${data.therapist.price_per_session}`;
+                // Update pricing will be handled by pricing manager
+                if (window.pricingManager) {
+                    window.pricingManager.updateBookingModalPrice();
                 }
                 
                 // Update WhatsApp buttons

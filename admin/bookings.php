@@ -76,6 +76,7 @@ $bookings = getAllBookings();
                                 <th>Therapist</th>
                                 <th>Appointment</th>
                                 <th>Amount</th>
+                                <th>Region</th>
                                 <th>Payment Method</th>
                                 <th>Payment Status</th>
                                 <th>Status</th>
@@ -120,7 +121,19 @@ $bookings = getAllBookings();
                                         </div>
                                     </td>
                                     <td>
-                                        <span class="fw-bold text-success"><?php echo formatPrice($booking['total_amount']); ?></span>
+                                        <div>
+                                            <span class="fw-bold text-success"><?php echo formatPrice($booking['total_amount']); ?></span>
+                                            <?php if ($booking['is_night']): ?>
+                                                <br><small class="text-warning">
+                                                    <i class="bi bi-moon-stars me-1"></i>Night Service (+₹<?php echo number_format($booking['night_charge']); ?>)
+                                                </small>
+                                            <?php endif; ?>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <span class="badge bg-<?php echo $booking['region'] === 'ncr' ? 'primary' : 'info'; ?>">
+                                            <?php echo $booking['region'] === 'ncr' ? 'Delhi-NCR' : 'Rest of India'; ?>
+                                        </span>
                                     </td>
                                     <td>
                                         <span class="badge bg-<?php echo (isset($booking['payment_id']) && $booking['payment_id']) ? 'primary' : 'secondary'; ?>">

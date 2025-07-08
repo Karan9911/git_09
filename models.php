@@ -44,7 +44,10 @@ $therapists = getAllTherapists();
                     $images = getTherapistImages($therapist['id']);
                     $therapistServices = getTherapistServices($therapist['id']);
                 ?>
-                    <div class="col-lg-4 col-md-6">
+                    <div class="col-lg-4 col-md-6" 
+                         data-therapist-id="<?php echo $therapist['id']; ?>"
+                         data-price-ncr="<?php echo $therapist['price_ncr'] ?? $therapist['price_per_session']; ?>"
+                         data-price-other="<?php echo $therapist['price_other'] ?? $therapist['price_per_session']; ?>">
                         <div class="therapist-card-modern">
                             <!-- Image Slider -->
                             <div class="therapist-slider" id="slider-<?php echo $therapist['id']; ?>">
