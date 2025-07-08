@@ -17,7 +17,7 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 //  }
 
 // Validate required fields
-$required_fields = ['therapist_id', 'full_name', 'email', 'phone', 'booking_date', 'booking_time', 'total_amount', 'region'];
+$required_fields = ['therapist_id', 'full_name', 'email', 'phone', 'booking_date', 'booking_time', 'total_amount'];
 $errors = [];
 
 foreach ($required_fields as $field) {
@@ -40,14 +40,22 @@ $booking_date = sanitizeInput($_POST['booking_date']);
 $booking_time = sanitizeInput($_POST['booking_time']);
 $message = sanitizeInput($_POST['message'] ?? '');
 $total_amount = (float)$_POST['total_amount'];
-$region = sanitizeInput($_POST['region']);
+$region = sanitizeInput($_POST['region'] ?? 'other');
 $is_night = isset($_POST['is_night']) && $_POST['is_night'] === '1';
 $night_charge = (float)($_POST['night_charge'] ?? 0);
 
+// Auto-detect night time from booking time if not explicitly set
+if (!$is_night) {
+    $bookingHour = (int)date('H', strtotime($booking_time));
+    $is_night = ($bookingHour >= 20 || $bookingHour < 8);
+    if ($is_night) {
+        $night_charge = 1500;
+    }
+}
+
 // Validate region
 if (!in_array($region, ['ncr', 'other'])) {
-    echo json_encode(['success' => false, 'message' => 'Invalid region selected']);
-    exit;
+    $region = 'other'; // Default fallback
 }
 
 // Validate email

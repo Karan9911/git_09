@@ -60,6 +60,15 @@
                     </li>
                 </ul>
                 
+                <!-- Region Price Indicator -->
+                <div class="region-price-indicator">
+                    <button class="btn btn-outline-primary btn-sm" id="regionPriceBtn" onclick="openRegionModal()">
+                        <i class="bi bi-geo-alt me-1"></i>
+                        <span id="currentRegionText">Delhi-NCR</span>
+                        <i class="bi bi-chevron-down ms-1"></i>
+                    </button>
+                </div>
+                
                 <div class="navbar-nav">
                     <?php if (isUserLoggedIn()): ?>
                         <div class="user-info d-flex align-items-center">
@@ -168,3 +177,36 @@
         }
     </script>
     <?php endif; ?>
+    
+    <!-- Region Selection Modal -->
+    <div class="modal fade" id="regionModal" tabindex="-1">
+        <div class="modal-dialog modal-sm">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">
+                        <i class="bi bi-geo-alt me-2"></i>Select Your Region
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <p class="text-muted mb-3">Choose your region to see accurate pricing:</p>
+                    <div class="d-grid gap-2">
+                        <button class="btn btn-outline-primary region-select-btn" data-region="ncr">
+                            <i class="bi bi-building me-2"></i>
+                            <div>
+                                <strong>Delhi-NCR</strong>
+                                <br><small>Delhi, Gurgaon, Noida, Faridabad</small>
+                            </div>
+                        </button>
+                        <button class="btn btn-outline-primary region-select-btn" data-region="other">
+                            <i class="bi bi-geo-alt me-2"></i>
+                            <div>
+                                <strong>Rest of India</strong>
+                                <br><small>All other cities</small>
+                            </div>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>

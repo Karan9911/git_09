@@ -336,7 +336,14 @@ function openBookingModal(therapistId) {
         .then(response => response.json())
         .then(data => {
             if (data.success) {
-                // Update pricing will be handled by pricing manager
+                // Store therapist data for pricing calculations
+                const modal = document.getElementById('bookingModal');
+                if (modal) {
+                    modal.dataset.therapistPriceNcr = data.therapist.price_ncr || data.therapist.price_per_session;
+                    modal.dataset.therapistPriceOther = data.therapist.price_other || data.therapist.price_per_session;
+                }
+                
+                // Update pricing
                 if (window.pricingManager) {
                     window.pricingManager.updateBookingModalPrice();
                 }

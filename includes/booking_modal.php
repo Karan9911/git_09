@@ -113,18 +113,38 @@
                                         </div>
                                         <div class="col-md-6">
                                             <label class="form-label">Preferred Time *</label>
-                                            <select class="form-control" name="booking_time" required>
+                                            <select class="form-control" name="booking_time" id="bookingTimeSelect" required>
                                                 <option value="">Select time</option>
-                                                <option value="09:00">9:00 AM</option>
-                                                <option value="10:00">10:00 AM</option>
-                                                <option value="11:00">11:00 AM</option>
-                                                <option value="12:00">12:00 PM</option>
-                                                <option value="14:00">2:00 PM</option>
-                                                <option value="15:00">3:00 PM</option>
-                                                <option value="16:00">4:00 PM</option>
-                                                <option value="17:00">5:00 PM</option>
-                                                <option value="18:00">6:00 PM</option>
+                                                <optgroup label="Regular Hours (8 AM - 8 PM)">
+                                                    <option value="08:00">8:00 AM</option>
+                                                    <option value="09:00">9:00 AM</option>
+                                                    <option value="10:00">10:00 AM</option>
+                                                    <option value="11:00">11:00 AM</option>
+                                                    <option value="12:00">12:00 PM</option>
+                                                    <option value="13:00">1:00 PM</option>
+                                                    <option value="14:00">2:00 PM</option>
+                                                    <option value="15:00">3:00 PM</option>
+                                                    <option value="16:00">4:00 PM</option>
+                                                    <option value="17:00">5:00 PM</option>
+                                                    <option value="18:00">6:00 PM</option>
+                                                    <option value="19:00">7:00 PM</option>
+                                                    <option value="20:00">8:00 PM</option>
+                                                </optgroup>
+                                                <optgroup label="Night Hours (+₹1,500)">
+                                                    <option value="21:00" data-night="true">9:00 PM (+₹1,500)</option>
+                                                    <option value="22:00" data-night="true">10:00 PM (+₹1,500)</option>
+                                                    <option value="23:00" data-night="true">11:00 PM (+₹1,500)</option>
+                                                    <option value="00:00" data-night="true">12:00 AM (+₹1,500)</option>
+                                                    <option value="01:00" data-night="true">1:00 AM (+₹1,500)</option>
+                                                    <option value="02:00" data-night="true">2:00 AM (+₹1,500)</option>
+                                                    <option value="03:00" data-night="true">3:00 AM (+₹1,500)</option>
+                                                    <option value="04:00" data-night="true">4:00 AM (+₹1,500)</option>
+                                                    <option value="05:00" data-night="true">5:00 AM (+₹1,500)</option>
+                                                    <option value="06:00" data-night="true">6:00 AM (+₹1,500)</option>
+                                                    <option value="07:00" data-night="true">7:00 AM (+₹1,500)</option>
+                                                </optgroup>
                                             </select>
+                                            <small class="form-text text-muted">Night hours (8 PM - 8 AM) include additional ₹1,500 charge</small>
                                         </div>
                                         <div class="col-12">
                                             <label class="form-label">Special Requests</label>
@@ -136,31 +156,9 @@
                                         <h6 class="fw-bold mb-3">
                                             <i class="bi bi-credit-card me-2"></i>Payment Information
                                         </h6>
-                                        
-                                        <!-- Night Time Toggle -->
-                                        <div class="night-time-section">
-                                            <div class="night-toggle-container">
-                                                <div>
-                                                    <h6 class="mb-1">
-                                                        <i class="bi bi-moon-stars me-2"></i>Night Time Service
-                                                    </h6>
-                                                    <small class="text-muted">Available 8 PM - 8 AM</small>
-                                                </div>
-                                                <label class="night-toggle-switch">
-                                                    <input type="checkbox" id="nightTimeToggle">
-                                                    <span class="night-slider"></span>
-                                                </label>
-                                            </div>
-                                            <div class="night-time-info" id="nightTimeInfo" style="display: none;">
-                                                <i class="bi bi-info-circle me-2"></i>
-                                                <small>Night time service includes additional ₹1,500 charge for premium late-night availability.</small>
-                                            </div>
-                                        </div>
-                                        
-                                        <!-- Price Breakdown -->
-                                        <div id="priceBreakdown"></div>
-                                        
                                         <div class="payment-amount-display mb-3">
+                                            <!-- Price Breakdown -->
+                                            <div id="priceBreakdown" class="mb-3"></div>
                                             <div class="d-flex justify-content-between align-items-center p-3 bg-light rounded">
                                                 <span>Session Amount:</span>
                                                 <span class="fw-bold text-success" id="displayAmount">₹0</span>

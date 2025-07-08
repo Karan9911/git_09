@@ -61,7 +61,11 @@ $pageTitle = $therapist['name'] . ' - Therapist Details';
                     <h1 class="therapist-title"><?php echo htmlspecialchars($therapist['name']); ?></h1>
                     
                     <div class="price-section">
-                        <span class="price-amount"><?php echo formatPrice($therapist['price_per_session']); ?></span>
+                        <span class="price-amount" 
+                              data-price-ncr="<?php echo $therapist['price_ncr'] ?? $therapist['price_per_session']; ?>"
+                              data-price-other="<?php echo $therapist['price_other'] ?? $therapist['price_per_session']; ?>">
+                            ₹<span class="price-value"><?php echo number_format($therapist['price_ncr'] ?? $therapist['price_per_session']); ?></span>
+                        </span>
                         <span class="price-label">per session</span>
                     </div>
                     

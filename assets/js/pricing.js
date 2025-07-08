@@ -1,19 +1,20 @@
 // Region-based pricing system
 class PricingManager {
     constructor() {
-        this.currentRegion = this.getStoredRegion();
+        this.currentRegion = this.getStoredRegion() || 'ncr'; // Default to NCR
         this.nightCharge = 1500;
         this.init();
     }
     
     init() {
-        this.setupRegionToggle();
+        this.setupRegionModal();
         this.updateAllPrices();
-        this.setupNightTimeToggle();
+        this.setupTimeSelection();
+        this.updateRegionDisplay();
     }
     
     getStoredRegion() {
-        return localStorage.getItem('selectedRegion') || 'other';
+        return localStorage.getItem('selectedRegion') || 'ncr';
     }
     
     setRegion(region) {
@@ -21,20 +22,22 @@ class PricingManager {
         localStorage.setItem('selectedRegion', region);
         this.updateAllPrices();
         this.updateRegionDisplay();
+        
+        // Close modal if open
+        const modal = bootstrap.Modal.getInstance(document.getElementById('regionModal'));
+        if (modal) modal.hide();
     }
     
-    setupRegionToggle() {
-        // Create region toggle if it doesn't exist
-        const existingToggle = document.getElementById('regionToggle');
-        if (!existingToggle) {
-            this.createRegionToggle();
-        }
-        
-        // Set initial state
-        this.updateRegionDisplay();
-        
+    setupRegionModal() {
         // Add event listeners
         document.addEventListener('click', (e) => {
+            if (e.target.matches('.region-select-btn') || e.target.closest('.region-select-btn')) {
+                const btn = e.target.matches('.region-select-btn') ? e.target : e.target.closest('.region-select-btn');
+                const region = btn.dataset.region;
+                this.setRegion(region);
+            }
+            
+            // Legacy support for old region buttons
             if (e.target.matches('.region-btn')) {
                 const region = e.target.dataset.region;
                 this.setRegion(region);
@@ -42,41 +45,17 @@ class PricingManager {
         });
     }
     
-    createRegionToggle() {
-        const heroSection = document.querySelector('.hero-section .container .row');
-        if (heroSection) {
-            const toggleHTML = `
-                <div class="col-12 mt-4">
-                    <div class="region-toggle-container" id="regionToggle">
-                        <div class="region-toggle">
-                            <span class="toggle-label">Select Your Region:</span>
-                            <div class="toggle-buttons">
-                                <button class="region-btn" data-region="ncr">
-                                    <i class="bi bi-building me-2"></i>Delhi-NCR
-                                </button>
-                                <button class="region-btn" data-region="other">
-                                    <i class="bi bi-geo-alt me-2"></i>Rest of India
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            `;
-            heroSection.insertAdjacentHTML('beforeend', toggleHTML);
-        }
-    }
-    
     updateRegionDisplay() {
-        const buttons = document.querySelectorAll('.region-btn');
+        const buttons = document.querySelectorAll('.region-btn, .region-select-btn');
         buttons.forEach(btn => {
             btn.classList.toggle('active', btn.dataset.region === this.currentRegion);
         });
         
-        // Update region indicator in navbar if exists
-        const regionIndicator = document.getElementById('regionIndicator');
-        if (regionIndicator) {
+        // Update region text in navbar
+        const regionText = document.getElementById('currentRegionText');
+        if (regionText) {
             const regionName = this.currentRegion === 'ncr' ? 'Delhi-NCR' : 'Rest of India';
-            regionIndicator.textContent = regionName;
+            regionText.textContent = regionName;
         }
     }
     
@@ -100,13 +79,13 @@ class PricingManager {
         // Update price display
         const priceElement = card.querySelector('.price-display');
         if (priceElement) {
-            priceElement.textContent = `₹${currentPrice.toLocaleString('en-IN')}/session`;
+            priceElement.innerHTML = `₹${currentPrice.toLocaleString('en-IN')}/session`;
         }
     }
     
-    setupNightTimeToggle() {
+    setupTimeSelection() {
         document.addEventListener('change', (e) => {
-            if (e.target.matches('#nightTimeToggle')) {
+            if (e.target.matches('#bookingTimeSelect')) {
                 this.updateBookingModalPrice();
             }
         });
@@ -116,19 +95,18 @@ class PricingManager {
         const modal = document.getElementById('bookingModal');
         if (!modal || !modal.classList.contains('show')) return;
         
-        const therapistId = document.getElementById('bookingTherapistId')?.value;
-        if (!therapistId) return;
+        // Get prices from modal data attributes (set when modal opens)
+        const priceNcr = parseFloat(modal.dataset.therapistPriceNcr || 0);
+        const priceOther = parseFloat(modal.dataset.therapistPriceOther || 0);
         
-        // Get therapist prices from data attributes
-        const therapistCard = document.querySelector(`[data-therapist-id="${therapistId}"]`);
-        if (!therapistCard) return;
+        if (priceNcr === 0 && priceOther === 0) return;
         
-        const priceNcr = parseFloat(therapistCard.dataset.priceNcr || 0);
-        const priceOther = parseFloat(therapistCard.dataset.priceOther || 0);
         const basePrice = this.currentRegion === 'ncr' ? priceNcr : priceOther;
         
-        // Check if night time is selected
-        const isNight = document.getElementById('nightTimeToggle')?.checked || false;
+        // Check if night time is selected from time dropdown
+        const timeSelect = document.getElementById('bookingTimeSelect');
+        const selectedOption = timeSelect?.options[timeSelect.selectedIndex];
+        const isNight = selectedOption?.dataset.night === 'true' || false;
         const nightCharge = isNight ? this.nightCharge : 0;
         const totalPrice = basePrice + nightCharge;
         
@@ -150,7 +128,7 @@ class PricingManager {
         
         let breakdownHTML = `
             <div class="price-breakdown">
-                <div class="d-flex justify-content-between">
+                <div class="d-flex justify-content-between mb-2">
                     <span>Base Price (${regionName}):</span>
                     <span>₹${basePrice.toLocaleString('en-IN')}</span>
                 </div>
@@ -158,7 +136,7 @@ class PricingManager {
         
         if (nightCharge > 0) {
             breakdownHTML += `
-                <div class="d-flex justify-content-between text-warning">
+                <div class="d-flex justify-content-between text-warning mb-2">
                     <span>Night Time Charge:</span>
                     <span>₹${nightCharge.toLocaleString('en-IN')}</span>
                 </div>
@@ -166,7 +144,7 @@ class PricingManager {
         }
         
         breakdownHTML += `
-                <hr class="my-2">
+                <hr class="my-1">
                 <div class="d-flex justify-content-between fw-bold text-success">
                     <span>Total Amount:</span>
                     <span>₹${totalPrice.toLocaleString('en-IN')}</span>
@@ -186,16 +164,44 @@ class PricingManager {
     getBookingData() {
         return {
             region: this.currentRegion,
-            isNight: document.getElementById('nightTimeToggle')?.checked || false,
-            nightCharge: document.getElementById('nightTimeToggle')?.checked ? this.nightCharge : 0
+            isNight: this.isNightTimeSelected(),
+            nightCharge: this.isNightTimeSelected() ? this.nightCharge : 0
         };
     }
+    
+    isNightTimeSelected() {
+        const timeSelect = document.getElementById('bookingTimeSelect');
+        const selectedOption = timeSelect?.options[timeSelect.selectedIndex];
+        return selectedOption?.dataset.night === 'true' || false;
+    }
+}
+
+// Global function for opening region modal
+function openRegionModal() {
+    const modal = new bootstrap.Modal(document.getElementById('regionModal'));
+    modal.show();
 }
 
 // Initialize pricing manager when DOM is loaded
 document.addEventListener('DOMContentLoaded', function() {
     window.pricingManager = new PricingManager();
+    
+    // Update therapist detail page prices
+    const priceAmount = document.querySelector('.price-amount');
+    if (priceAmount) {
+        const priceNcr = parseFloat(priceAmount.dataset.priceNcr || 0);
+        const priceOther = parseFloat(priceAmount.dataset.priceOther || 0);
+        const currentRegion = window.pricingManager.currentRegion;
+        const currentPrice = currentRegion === 'ncr' ? priceNcr : priceOther;
+        
+        const priceValue = priceAmount.querySelector('.price-value');
+        if (priceValue) {
+            priceValue.textContent = currentPrice.toLocaleString('en-IN');
+        }
+    }
 });
 
+// Make functions globally available
+window.openRegionModal = openRegionModal;
 // Export for global access
 window.PricingManager = PricingManager;
